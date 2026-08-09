@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Gənc Kəşfiyyatçı | Platforma</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .header {
+            background: linear-gradient(135deg, #1f6feb, #238636);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 650px;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 650px;
+            margin: 20px auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+        input, button, select {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            font-size: 15px;
+        }
+        input {
+            width: 65%;
+            background: #0d1117;
+            color: white;
+        }
+        button {
+            background: #238636;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #2ea043;
+        }
+        .quiz-option {
+            display: block;
+            width: 100%;
+            background: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            text-align: left;
+            margin: 5px 0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .quiz-option:hover {
+            background: #30363d;
+        }
+        .glossary-item {
+            background: #0d1117;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border-left: 4px solid #1f6feb;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Başlıq və Statistika -->
+    <div class="header">
+        <h2>🚀 Gənc Kəşfiyyatçı</h2>
+        <p>İT, Məntiq və Texnologiya Dünyası</p>
+        <p>İstifadəçi: <span id="qonaqAdi" style="color: #ffd700; font-weight: bold;">Qonaq</span> | 
+           Xal: <span id="xalGosterici" style="color: #58a6ff; font-weight: bold;">0</span> | 
+           Rütbə: <span id="rutbeGosterici" style="color: #3fb950; font-weight: bold;">Yeni Kəşfiyyatçı</span></p>
+    </div>
+
+    <!-- Profil Bölməsi -->
+    <div class="card">
+        <h3>👤 Profilinizi Yaradın</h3>
+        <label>Adınız / Ləqəbiniz:</label><br>
+        <input type="text" id="istifadeciAdi" placeholder="Məsələn: Kəşfiyyatçı_01">
+        <button onclick="profiliYaddaSaxla()">Yadda Saxla</button>
+    </div>
+
+    <!-- Bugünkü Tapşırıq -->
+    <div class="card">
+        <h3>🎯 Bugünkü Tapşırıq</h3>
+        <p><b>Tapşırıq:</b> Kompüter şəbəkələrində məlumat daşıyan əsas ünvan protokolunun adını öyrən və xal qazan!</p>
+        <button onclick="tapsirigiTamamla()">Tapşırığı Yerinə Yetirdim (+10 Xal)</button>
+    </div>
+
+    <!-- Mini Quiz / Zəka Testi -->
+    <div class="card">
+        <h3>🧠 Zəka və Texnologiya Testi</h3>
+        <p id="sualMetni">Sual: Hansı qurğu kompüteri internetə qoşmaq üçün əsas şəbəkə avadanlığıdır?</p>
+        <button class="quiz-option" onclick="cavabYoxla(false)">A) Ekran</button>
+        <button class="quiz-option" onclick="cavabYoxla(true)">B) Router (Marşrutizator)</button>
+        <button class="quiz-option" onclick="cavabYoxla(false)">C) Klaviatura</button>
+        <p id="quizNeticəsi" style="font-weight: bold; margin-top: 10px;"></p>
+    </div>
+
+    <!-- Texnoloji Lüğət -->
+    <div class="card">
+        <h3>📚 İT və Texnologiya Lüğəti</h3>
+        <div class="glossary-item">
+            <b>IP Ünvan:</b> Kompüterlərin internetdə və ya yerli şəbəkədə bir-birini tanıması üçün istifadə olunan rəqəmsal identifikasiya nömrəsidir.
+        </div>
+        <div class="glossary-item">
+            <b>RAM:</b> Əməli yaddaş deməkdir; kompüterin işləmə sürətinə və açıq proqramların idarə olunmasına birbaşa təsir edir.
+        </div>
+    </div>
+
+    <!-- Liderlər Lövhəsi -->
+    <div class="card">
+        <h3>🏆 Reytinq və Liderlər Lövhəsi</h3>
+        <ol id="liderlerListi" style="padding-left: 20px; margin: 5px 0;">
+            <li>Kəşfiyyatçı_01 — 120 xal</li>
+            <li>NetMaster — 95 xal</li>
+            <li id="cariIstifadeciSirasi">Sizin Xalınız — 0 xal</li>
+        </ol>
+    </div>
+
+    <script>
+        // Səhifə yüklənəndə yaddaşdan məlumatları oxumaq
+        window.onload = function() {
+            let yaddaxasiAd = localStorage.getItem("kullaniciAdi");
+            let yaddadaxal = parseInt(localStorage.getItem("kullaniciXali")) || 0;
+
+            if (yaddaxasiAd) {
+                document.getElementById("qonaqAdi").innerText = yaddaxasiAd;
+                document.getElementById("istifadeciAdi").value = yaddaxasiAd;
+            }
+            document.getElementById("xalGosterici").innerText = yaddadaxal;
+            rutbeGuncelle(yaddadaxal);
+            liderlerCedvelini Yenile(yaddaxasiAd || "Qonaq", yaddadaxal);
+        };
+
+        // Profili yadda saxlamaq
+        function profiliYaddaSaxla() {
+            let ad = document.getElementById("istifadeciAdi").value;
+            if (ad.trim() !== "") {
+                localStorage.setItem("kullaniciAdi", ad);
+                document.getElementById("qonaqAdi").innerText = ad;
+                let cariXal = parseInt(localStorage.getItem("kullaniciXali")) || 0;
+                liderlerCedvelini Yenile(ad, cariXal);
+                alert("Profil uğurla yadda saxlanıldı!");
+            } else {
+                alert("Zəhmət olmasa ad daxil edin.");
+            }
+        }
+
+        // Tapşırığı tamamlayıb xal artırmaq
+        function tapsirigiTamamla() {
+            let cariXal = parseInt(localStorage.getItem("kullaniciXali")) || 0;
+            cariXal += 10;
+            localStorage.setItem("kullaniciXali", cariXal);
+            document.getElementById("xalGosterici").innerText = cariXal;
+            rutbeGuncelle(cariXal);
+            
+            let ad = localStorage.getItem("kullaniciAdi") || "Qonaq";
+            liderlerCedvelini Yenile(ad, cariXal);
+            alert("Təbriklər! +10 xal qazandınız.");
+        }
+
+        // Quiz cavabını yoxlamaq
+        function cavabYoxla(dogrudur) {
+            let neticeElementi = document.getElementById("quizNeticəsi");
+            if (dogrudur) {
+                neticeElementi.style.color = "#3fb950";
+                neticeElementi.innerText = "🎉 Doğrudur! +15 xal qazandınız.";
+                let cariXal = parseInt(localStorage.getItem("kullaniciXali")) || 0;
+                cariXal += 15;
+                localStorage.setItem("kullaniciXali", cariXal);
+                document.getElementById("xalGosterici").innerText = cariXal;
+                rutbeGuncelle(cariXal);
+                let ad = localStorage.getItem("kullaniciAdi") || "Qonaq";
+                liderlerCedvelini Yenile(ad, cariXal);
+            } else {
+                neticeElementi.style.color = "#f85149";
+                neticeElementi.innerText = "❌ Səhvdir, yenidən sınayın!";
+            }
+        }
+
+        // Xala görə rütbə təyini
+        function rutbeGuncelle(xal) {
+            let rutbe = "Yeni Kəşfiyyatçı";
+            if (xal >= 50 && xal < 100) {
+                rutbe = "Təcrübəli Kəşfiyyatçı";
+            } else if (xal >= 100) {
+                rutbe = "Şəbəkə Masteri / İT Ekspert";
+            }
+            document.getElementById("rutbeGosterici").innerText = rutbe;
+        }
+
+        // Liderlər lövhəsini yeniləmək
+        function liderlerCedveliniYenile(ad, xal) {
+            document.getElementById("cariIstifadeciSirasi").innerText = ad + " (Siz) — " + xal + " xal";
+        }
+    </script>
+
+</body>
+</html>
